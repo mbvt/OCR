@@ -23,8 +23,6 @@ Image* new_matrice(int w, int h, Categorie cat);
 void set_pixel(Image* img, int i, int j, unsigned char px);
 //Getteur for a pixel
 unsigned char get_pixel(Image* img, int i, int j);
-//Function who get a sub matrice between horizontal and vertical coordonnee and set a categorie
-Image* cut_image(Image* img, Categorie cat, int i_min, int i_max, int j_min, int j_max);
 //Function who free an image
 void del_image(Image* img);
 
