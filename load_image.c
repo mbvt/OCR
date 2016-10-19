@@ -49,6 +49,8 @@ Image* convert_image(char *path)
 	init_sdl();
 	SDL_Surface* img = load_image(path);
 	Image* new_img = new_matrice(img->w, img->h, IMAGE);
+	unsigned char min = 255, max = 0;
+
 	for(int i = 0; i < img->h; i++)
 	{
 		for(int j = 0 ; j < img->w; j++)
@@ -56,9 +58,12 @@ Image* convert_image(char *path)
 			Uint32 p = getpixel(img, j, i);
 			Uint8 r, g, b;
 			SDL_GetRGB(p, img->format, &r, &g, &b);
-			Uint32 gr=(0.3*r+0.59*g+0.11*b);
+			Uint32 gr=(0.2126*r+0.7152*g+0.0722*b);
+			min = (gr<min)?gr:min;
+			max = (gr>max)?gr:max;
 			set_pixel(new_img,i,j,(gr>128)?1:0);
 		}
 	}
+	printf("%d , %d", min, max);
 	return new_img;
 }

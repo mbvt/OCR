@@ -7,9 +7,11 @@
 Image* new_matrice(int w, int h, Categorie cat) 
 {
 	Image* img = malloc(sizeof(Image));
+	assert(img);
 	img->w = w;
 	img->h = h;
-	img->dat = calloc(1,w*h*sizeof(unsigned char*));
+	img->dat = calloc(w*h,sizeof(unsigned char*));
+	assert(img->dat);
 	img->cat = cat;
 	return img;
 }
