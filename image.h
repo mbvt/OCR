@@ -1,7 +1,7 @@
 // image.h list functions about matrice treatement
 
-# ifndef _OCR_IMAGE_H_
-# define _OCR_IMAGE_H_
+# ifndef _OCROOT_IMAGE_H_
+# define _OCROOT_IMAGE_H_
 
 //list type of matrice
 typedef enum Categorie
@@ -28,4 +28,4 @@ Image* cut_image(Image* img, Categorie cat, int i_min, int i_max, int j_min, int
 //Function who free an image
 void del_image(Image* img);
 
-# endif /* _OCR_IMAGE_H_ */
+# endif /* _OCROOT_IMAGE_H_ */
