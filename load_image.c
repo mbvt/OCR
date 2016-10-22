@@ -132,7 +132,7 @@ SDL_Surface* display_image(SDL_Surface *img) {
   return screen;
 }
 
-void contour_text(Image *img, SLD_Surface *surf)
+void contour_text(Image *img, SDL_Surface *surf)
 {
 	Text *te = img->te;
 	Uint32 p = SDL_MapRGB(img->format,255,0,0);
