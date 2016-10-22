@@ -5,25 +5,16 @@
 
 # include "image.h"
 # include "load_image.h"
+# include "decoupage.h"
 
-int main()
+int main(int argc, char **argv)
 {
-	Image *img = convert_image("cLena.bmp");
-	FILE *f = fopen("file.txt", "w");
-	if (f == NULL)
-	{
-		printf("Error opening file!\n");
-		exit(1);
-	}
-	for(int i = 0; i < img->h; i++)
-	{
-		for(int j = 0; j < img->w; j++)
-		{
-			fputs(get_pixel(img,i,j)?"1":"0",f);
-		}
-		fputs("\n",f);
-	}
-	fclose(f);
-	
+	assert(argc==2);
+	init_sdl();
+	SDL_Surface txt = load_image(argv[1]);
+	Image *img = convert_image(txt);
+	get_text(img);
+	contour_text(img,txt);
+	display_image(txt);
 	return 0;
 };
