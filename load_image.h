@@ -14,9 +14,15 @@
 void init_sdl(void);
 //Function who load an image
 SDL_Surface* load_image(char *path);
-//Getteur for an image's pixel
+//Get a pixel
 Uint32 getpixel(SDL_Surface *surface, unsigned x,  unsigned y);
+//Set a pixel
+void putpixel(SDL_Surface *surface, unsigned x, unsigned y, Uint32 pixel);
 //Function who return a black and white matrice
 Image* convert_image(char *path);
+//Display an image
+SDL_Surface* display_image(SDL_Surface *img);
+//Draw edge of text
+void contour_text(Image *img, SDL_Surface *surf);
 
 # endif /* _OCROOT_LOAD_IMAGE_H_ */
