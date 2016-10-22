@@ -45,8 +45,6 @@ void add_Lettre(Ligne *li, int j_min, int j_max);
 
 //Get a pixel
 unsigned char get_pixel(Image* img, int i, int j);
-//Get text 
-Text* get_text(Image *img);
 //Get a row
 Ligne* get_ligne(Text* te, int i);
 //Get a letter

@@ -65,11 +65,6 @@ unsigned char get_pixel(Image *img, int i , int j)
 	return *(img->dat+img->h*i+j);
 }
 
-Text* get_text(Image *img)
-{
-	return img->te;
-}
-
 Ligne* get_ligne(Text* te, int i)
 {
 	assert(i < te->nb_li);
