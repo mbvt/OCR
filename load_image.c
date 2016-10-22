@@ -92,6 +92,22 @@ Image* convert_image(SDL_Surface* img)
 	return new_img;
 }
 
+void wait_for_keypressed(void) {
+  SDL_Event             event;
+  // Infinite loop, waiting for event
+  for (;;) {
+    // Take an event
+    SDL_PollEvent( &event );
+    // Switch on event type
+    switch (event.type) {
+    // Someone pressed a key -> leave the function
+    case SDL_KEYDOWN: return;
+    default: break;
+    }
+  // Loop until we got the expected event
+  }
+}
+
 SDL_Surface* display_image(SDL_Surface *img) {
   SDL_Surface          *screen;
   // Set the window to the same size as the image

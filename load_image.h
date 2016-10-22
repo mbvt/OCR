@@ -20,6 +20,8 @@ Uint32 getpixel(SDL_Surface *surface, unsigned x,  unsigned y);
 void putpixel(SDL_Surface *surface, unsigned x, unsigned y, Uint32 pixel);
 //Function who return a black and white matrice
 Image* convert_image(SDL_Surface* img);
+//Wait for keydown event
+void wait_for_keypressed(void);
 //Display an image
 SDL_Surface* display_image(SDL_Surface *img);
 //Draw edge of text
