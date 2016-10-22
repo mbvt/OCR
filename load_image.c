@@ -48,7 +48,7 @@ Image* convert_image(char *path)
 {
 	init_sdl();
 	SDL_Surface* img = load_image(path);
-	Image* new_img = new_matrice(img->w, img->h, IMAGE);
+	Image* new_img = new_matrice(img->w, img->h);
 	unsigned char min = 255, max = 0;
 
 	for(int i = 0; i < img->h; i++)
