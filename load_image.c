@@ -70,10 +70,8 @@ void putpixel(SDL_Surface *surface, unsigned x, unsigned y, Uint32 pixel) {
   }
 }
 
-Image* convert_image(char *path)
+Image* convert_image(SDL_Surface* img)
 {
-	init_sdl();
-	SDL_Surface* img = load_image(path);
 	Image* new_img = new_matrice(img->w, img->h);
 	unsigned char min = 255, max = 0;
 
