@@ -4,7 +4,7 @@
 # include <assert.h>
 # include "image.h"
 
-Image* new_matrice(int w, int h) 
+Image* new_matrix(int w, int h) 
 {
 	Image* img = malloc(sizeof(Image));
 	assert(img);
@@ -19,7 +19,7 @@ Image* new_matrice(int w, int h)
 void set_pixel(Image* img, int i, int j, unsigned char px)
 {
 	assert(img && i>=0 && i<img->h && j>=0 && j<img->w);
-	*(img->dat+img->h*i+j) = px;
+	*(img->dat+img->w*j+i) = px;
 }
 
 void set_text(Image *img, int i_min, int i_max, int j_min, int j_max)
@@ -35,46 +35,47 @@ void set_text(Image *img, int i_min, int i_max, int j_min, int j_max)
 	img->te = te;
 }
 
-void add_ligne(Text *te, int i_min, int i_max)
+void add_row(Text *te, int i_min, int i_max)
 {
 	Ligne *li = malloc(sizeof(Ligne));
 	assert(li);
 	li->i_min = i_min;
 	li->i_max = i_max;
-	li->nb_le++;
-	li->le = null;
+	li->nb_le=0;
+	li->le = NULL;
 	te->nb_li++;
-	te->li = realloc(te->li,te->nb_li);
-	*(te->li + te->nb_li -1)=li;
+	te->li = realloc(te->li,te->nb_li*sizeof(Ligne));
+	*(te->li + te->nb_li -1)= *li;
 }
 
-void add_lettre(Ligne *li, int j_min, int j_max)
+void add_letter(Ligne *li, int j_min, int j_max)
 {
 	Lettre *le = malloc(sizeof(Lettre));
 	assert(le);
 	le->j_min = j_min;
 	le->j_max = j_max;
 	li->nb_le++;
-	li->le = realloc(li->le, li->nb_le);
-	*(li->le + li->nb_le - 1) = le;
+	li->le = realloc(li->le, li->nb_le*sizeof(Lettre));
+	assert(li->le);
+	*(li->le + li->nb_le -1) = *le;
 }
 
 unsigned char get_pixel(Image *img, int i , int j)
 {	
 	assert(img && i>=0 && i<img->h && j>=0 && j<img->w);
-	return *(img->dat+img->h*i+j);
+	return *(img->dat+img->w*j+i);
 }
 
-Ligne* get_ligne(Text* te, int i)
+Ligne* get_row(Text* te, int i)
 {
 	assert(i < te->nb_li);
-	return *(te->li + i);
+	return (te->li + i);
 }
 
-Lettre* get_lettre(Ligne* li, int i)
+Lettre* get_letter(Ligne* li, int i)
 {
 	assert(i < li->nb_le);
-	return *(li->le + i);
+	return (li->le + i);
 }
 
 void del_image(Image* img)
@@ -82,9 +83,9 @@ void del_image(Image* img)
 	if(img)
 	{
 		Text* te = img->te;
-		for(int i = 0; i<img->nb_li;i++)
+		for(int i = 0; i<te->nb_li;i++)
 		{
-			Ligne *li = *(te->li + i);
+			Ligne *li = &(*(te->li + i));
 			for(int j = 0; j<li->nb_le;j++)
 			{
 				free(li->le + i);

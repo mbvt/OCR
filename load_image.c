@@ -72,8 +72,7 @@ void putpixel(SDL_Surface *surface, unsigned x, unsigned y, Uint32 pixel) {
 
 Image* convert_image(SDL_Surface* img)
 {
-	Image* new_img = new_matrice(img->w, img->h);
-	unsigned char min = 255, max = 0;
+	Image* new_img = new_matrix(img->w, img->h);
 
 	for(int i = 0; i < img->h; i++)
 	{
@@ -83,12 +82,9 @@ Image* convert_image(SDL_Surface* img)
 			Uint8 r, g, b;
 			SDL_GetRGB(p, img->format, &r, &g, &b);
 			Uint32 gr=(0.2126*r+0.7152*g+0.0722*b);
-			min = (gr<min)?gr:min;
-			max = (gr>max)?gr:max;
-			set_pixel(new_img,i,j,(gr>128)?1:0);
+			set_pixel(new_img,i,j,(gr<128)?1:0);
 		}
 	}
-	printf("%d , %d", min, max);
 	return new_img;
 }
 
@@ -132,18 +128,49 @@ SDL_Surface* display_image(SDL_Surface *img) {
   return screen;
 }
 
-void contour_text(Image *img, SDL_Surface *surf)
+void draw_square(SDL_Surface *surf, int i_min, int i_max, int j_min, int j_max, Uint32 p)
+{
+	for(int i = i_min; i<=i_max;++i)
+        {
+                putpixel(surf,j_min,i,p);
+                putpixel(surf,j_max,i,p);
+        }
+        for(int i = j_min; i<=j_max;++i)
+        {
+                putpixel(surf,i,i_min,p);
+                putpixel(surf,i,i_max,p);
+        }
+}
+
+void edge_text(Image *img, SDL_Surface *surf)
 {
 	Text *te = img->te;
-	Uint32 p = SDL_MapRGB(img->format,255,0,0);
-	for(int i = te->i_min; i<=i_max;++i)
+	Uint32 p = SDL_MapRGB(surf->format,255,0,0);
+	draw_square(surf,te->i_min,te->i_max,te->j_min,te->j_max,p);
+}
+
+void edge_row(Image *img, SDL_Surface *surf)
+{
+	Text *te = img->te;
+	Uint32 p = SDL_MapRGB(surf->format,0,255,0);
+	for(int i=0; i<te->nb_li;++i)
 	{
-		putpixel(surf,te->j_min,i,p);
-		putpixel(surf,te->j_max,i,p);
+		Ligne li = *(te->li + i);
+		draw_square(surf,li.i_min,li.i_max,te->j_min,te->j_max,p);  
 	}
-	for(int i = te->j_min; i<=j_max;++i)
+}
+
+void edge_letter(Image *img, SDL_Surface *surf)
+{
+	Text *te = img->te;
+	Uint32 p = SDL_MapRGB(surf->format,0,0,255);
+	for(int i=0; i<te->nb_li; ++i)
 	{
-		putpixel(surf,i,te->i_min,p);
-		putpixel(surf,i,te->i_max,p);
+		Ligne li = *(te->li + i);
+		for(int j = 0; j<li.nb_le;++j)
+		{
+			Lettre le = *(li.le + j);
+			draw_square(surf,li.i_min,li.i_max,le.j_min,le.j_max,p);
+		}
 	}
 }

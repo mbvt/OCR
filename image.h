@@ -32,23 +32,23 @@ typedef struct Image
 } Image;
 
 //Initialize an empty matrice
-Image* new_matrice(int w, int h);
+Image* new_matrix(int w, int h);
 
 //Set a pixel
 void set_pixel(Image* img, int i, int j, unsigned char px);
 //Set text coordonnee
 void set_text(Image *img, int i_min, int i_max, int j_min, int j_max);
 //Add a row in text
-void add_Ligne(Text *te, int i_min, int i_max);
+void add_row(Text *te, int i_min, int i_max);
 //Add a letter in a row
-void add_Lettre(Ligne *li, int j_min, int j_max);
+void add_letter(Ligne *li, int j_min, int j_max);
 
 //Get a pixel
 unsigned char get_pixel(Image* img, int i, int j);
 //Get a row
-Ligne* get_ligne(Text* te, int i);
+Ligne* get_row(Text* te, int i);
 //Get a letter
-Lettre* get_lettre(Ligne *li, int i);
+Lettre* get_letter(Ligne *li, int i);
 
 //Free an image
 void del_image(Image* img);

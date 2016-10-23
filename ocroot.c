@@ -14,8 +14,15 @@ int main(int argc, char **argv)
 	init_sdl();
 	SDL_Surface *txt = load_image(argv[1]);
 	Image *img = convert_image(txt);
-	get_text(img);
-	contour_text(img,txt);
+	search_text(img);
+	search_row(img);
+	search_letter(img);
+	display_image(txt);
+	edge_text(img,txt);
+	display_image(txt);
+	edge_row(img,txt);
+	display_image(txt);
+	edge_letter(img,txt);
 	display_image(txt);
 	return 0;
 };
