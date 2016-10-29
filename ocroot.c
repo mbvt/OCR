@@ -7,10 +7,12 @@
 # include "image.h"
 # include "load_image.h"
 # include "decoupage.h"
+# include "reseau.h"
 
-int main(int argc, char **argv)
+//int main(int argc, char **argv)
+int main(void)
 {
-	assert(argc==2);
+/*	assert(argc==2);
 	init_sdl();
 	SDL_Surface *txt = load_image(argv[1]);
 	Image *img = convert_image(txt);
@@ -24,5 +26,8 @@ int main(int argc, char **argv)
 	display_image(txt);
 	edge_letter(img,txt);
 	display_image(txt);
+*/
+	int size[3] = {3,5,1};
+	construct(size,3);	
 	return 0;
-};
+}
