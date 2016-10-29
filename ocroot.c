@@ -27,7 +27,14 @@ int main(void)
 	edge_letter(img,txt);
 	display_image(txt);
 */
-	int size[3] = {3,5,1};
-	construct(size,3);	
+	int size[3] = {4,3,1};
+	float *data=calloc(4,sizeof(float));
+	*data=1.0;
+	*(data+1)=1.0;
+	*(data+2)=1.0;
+	*(data+3)=1.0;
+	Reseau *r = construct(size,3);
+	data = feed_forward(r,data);
+	printf("%f\n",*(data));	
 	return 0;
 }
