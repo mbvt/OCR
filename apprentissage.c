@@ -12,41 +12,6 @@ void shuffle(Teach *t, int length)
 	}
 }
 
-void zeros(const Reseau *r, float **n_b, float **n_w)
-{
-	*n_b = calloc(r->length_biases,sizeof(float));
-	*n_w = calloc(r->length_weigth,sizeof(float));
-}
-
-void maj_nabla(const Reseau *r, float *n_b, float *n_w, float *d_n_b, float *d_n_w)
-{
-	int i = 0;
-	for(;i<r->length_bias;++i)
-	{
-		*(n_b+i)=*(n_b+i)+*(d_n_b+i);
-		*(n_w+i)=*(n_w+i)+*(d_n_w+i);
-	}
-	for(;i<r->length_weight;++i)
-		*(n_w+i)=*(n_w+i)+*(d_n_w+i);
-	free(d_n_b);
-	free(d_n_w);
-}
-
-void maj_reseau(Reseau *r, float *n_b, float *n_w, int batch_size, float eta)
-{
-	int i = 0;
-	float tx = eta/(float)batch_size;
-	for(;i<r->length_bias;++i)
-	{
-		*(r->biases+i) = *(r->biases+i)-tx**(n_b+i);
-		*(r->weight+i) = *(r->weight+i)-tx**(n_w+i);
-	}
-	for(;i<r->length_weight;++i)
-		*(r->weight+i) = *(r->weight+i)-tx**(n_w+i);
-	free(n_b);
-	free(n_w);
-}
-
 void copy_array(float *des, float *ori, int n)
 {
 	float *fin = ori+n;
@@ -56,83 +21,143 @@ void copy_array(float *des, float *ori, int n)
 	}
 }
 
-float* sigmoid_prime(Reseau *r, int rang, float *data)
+int evaluate(Reseau *r, const Teach* test_data, int length_tsd)
 {
-	float *temp = sigmoid(r,i,z_calc(r,i,data));
-	for(int i = 0; i < r->size[rang];++i)
+	int res = 0;
+	for(int i = 0; i<length_tsd;++i)
 	{
-		*(temp+i) = *(temp+i)*(-1.0**(temp+i));
-	}	
-	return temp;
-}
-
-void cost_derivative(Reseau *r, int rang, float *data, float result)
-{
-	for(int i = 0; i<r->size[rang]; ++i)
-	{
-		*(data+i)-= result;
+		float *t = feed_forward(r, (test_data + i)->data);
+		int val = round(*t*100);
+		int val2 = round((test_data+i)->result*100);
+		res+= val == val2;
+		printf("eval : %d , %d\n",val, val2);
 	}
+	return res;
 }
 
-float* calc_delta(Reseau *r, int rang, float *z, float *activation, float result)
+float* compute_output_d(Reseau *r,int rang, float *data, float result)
 {
-	float *temp = sigmoid_prime(r,rang,z);
-	cost_derivative(r,rang,activation,result);
-	for(int i = 0; i<r->size[rang]; ++i)
+	float *temp = calloc(r->size[rang],sizeof(float));
+	for(int i = 0; i<r->size[rang];++i)
 	{
-		*(temp + i) = *(activation+i)**(temp+i);
+		float ok = *(data+i);
+		*(temp+i)=ok*(1-ok)*(ok-result);
 	}
 	return temp;
 }
 
-float* first_delta(Reseau *r, int rang, float *delta, float *activation)
-{ 
-	float *temp = calloc(r->size[rang-1]);
-	for(int i = 0; i<*(r->size[rang-1]);++i)
+float* compute_hidden_d(Reseau *r, int rang, float *data, float *delta)
+{
+	float *temp = calloc(r->size[rang],sizeof(float));
+	for(int i = 0; < r->size[rang+1]; ++i)
+	{
+		float *w;
+		get_weight(r,rang+1,i,&w);
+		int j = 0;
+		for(;j<r->size[rang];++j)
+		{
+			
+			*(temp+j)+= *(delta+i) + *(w+j); 
+		}	
+		--j;
+		float oj = *(data+j);
+		*(temp+j)*=oj*(1-oj);
+	}
+}
+
+void update_bias(Reseau *r, int rang, const float eta, float *data)
+{
+	float *b;
+	get_biases(r, rang, &b);
+	for(int i = 0; i<r->size[rang];++i)
 	{
 		
+		*(b+i)+=-1.0*eta**(data+i);
 	}
 }
 
-void back_propagation(Reseau *r, Teach current_val, float *d_n_b, float *d_n_w)
+void update_weight(Reseau *r, int rang, const float eta, float *data, float *hidden_output)
 {
-	zeros(r, &d_n_b, &d_n_w);
-	float *activation = current_val.data;
-	float *activations = calloc(r->length_biais+r->size[0],sizeof(float));
-	float *zs = calloc(r->length_biais,sizeof(float));
-	copy_array(activations,activation,r->size[0]);
-	int pos_bz = 0, pos_ba = r->size[0], pos_w = 0;
+	float *w;
+	for(int i = 0; i<r->size[rang]; ++i)
+	{
+		get_weight(r,rang,i,&w);
+		for(int j = 0; j<r->size[rang-1]; ++j)
+		{²
+			*(w+j) += -1.0*eta**(data+i)**(hidden_output+j);
+		}
+	}
+}
+
+void back_propagation(Reseau *r, const Teach current_val, const float eta)
+{
+	float *d_n_b = calloc(r->length_bias+r->size[0],sizeof(float));
+	
+
+	float *data = current_val.data;
+
+	copy_array(d_n_b,data,r->size[0]);
+	int pos_b = r->size[0];
 	int i = 1;
-	float *z = NULL;
 	for(; i<r->length_size;++i)
 	{
-		z = z_calc(r,i,activation);
-		activation = sigmoid(r,i,z);
-		copy_array(zs+pos_bz,z,r->size[i]);
-		copy_array(activations+pos_ba,activation,r->size[i]);
-		free(z);
-		pos_bz+=r->size[i];
-		pos_ba+=r->size[i];
-		pos_w+=r->size[i]*r->size[i-1];
-		
+		data = sigmoid(r,i,z_calc(r,i,data));
+		copy_array(d_n_b+pos_b,data,r->size[i]);
+		pos_b+=r->size[i];
 	}
 	--i;
-	pos_bz-=r->size[i];
-	pos_ba-=r->size[i];	
-	pos_w-=r->size[i]*r->size[i-1];
-	copy_array(z,zs+pos_bz,r->size[i]);
-	float* delta = calc_delta(r,i,z,activation,current_val->result);
-	pos_ba-=r->size[i-1];
-	copy_array(activation,activations+pos_ba,r->size[i-1]);
-
+	pos_b-=r->size[i];
+	float *output_d = compute_output_d(r,i,data,current_val.result);
+	update_bias(r, i, eta, output_d);
+	--i;
+	pos_b-=r->size[i];
+	copy_array(data,d_n_b+pos_b,r->size[i]);
+	update_weight(r, i+1, eta, output_d, data);
+	--i;
+	
+	for(;i>0;--i)
+	{
+		pos_b-=r->size[i];
+		copy_array(data,d_n_b+pos_b,r->size[i]);
+		float *hidden_d = comput_hidden_d(r,i,data,outpud_d);
+		update_bias(r, i, eta, output_d);
+		update_weight(r, i+1, eta, output_d, data);
+	}
 }
 
-void sgd(Reseau *r, Teach *tr_data, int length_trd, int epoch, int m_b_size, float eta,
-	Teach* test_data, int length_tsd)
+void teach_reseau(Reseau *r, const Teach *tr_data, int length_trd, const float eta)
+{
+	for(int i = 0; i<length_trd;++i)
+	{
+		back_propagation(r, *(tr_data + i), eta);		
+	}
+}
+
+void sgd(Reseau *r, Teach *tr_data, int length_trd, int epoch, 
+	float eta, const Teach* test_data, int length_tsd)
 {
 	for(int i = 0; i<epoch;++i)
 	{
 		shuffle(tr_data,length_trd);
-		//update1
+		teach_reseau(r,tr_data, length_trd, eta);	
+		if(length_tsd)
+		{
+			int res = evaluate(r,test_data,length_tsd);
+			/*int j = 0;
+			for(; j < 1;++j)
+			{
+				printf("b%d : %f\n",j,*(r->biases+j));
+				printf("w%d : %f\n",j,*(r->weight+j));
+			}
+		
+			for(; j < 2;++j)
+			{
+				printf("w%d : %f\n",j,*(r->weight+j));
+			}*/
+			if(res>0)
+			printf("Epoch %d : %d/%d\n",i+1,res,length_tsd);
+		}
+		else
+			printf("Epoch %d complete\n",i+1);
 	}
 }

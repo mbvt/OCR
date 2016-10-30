@@ -1,5 +1,5 @@
 # include "reseau.h"
-
+# include <stdio.h>
 Reseau* construct(int *size, int ls)
 {
 	Reseau *r = malloc(sizeof(Reseau));
@@ -23,7 +23,7 @@ Reseau* construct(int *size, int ls)
 		int length_w = *(size+i-1);
 		for(int j = 0; j<length_n;++j)
 		{
-			*(r->biases+ pos_b+j) = pos_b + j;
+			*(r->biases+ pos_b+j) = pos_b+j;
 			for(int k = 0; k<length_w;++k)
 			{
 				*(r->weight + pos_w + j*length_w + k) 
@@ -75,7 +75,6 @@ float* z_calc(const Reseau *r, int rang, float *data)
 		}
 		*(temp+i)+=*(beg_b+i);
 	}
-	free(data);
 	return temp;
 }
 
