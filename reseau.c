@@ -23,11 +23,11 @@ Reseau* construct(int *size, int ls)
 		int length_w = *(size+i-1);
 		for(int j = 0; j<length_n;++j)
 		{
-			*(r->biases+ pos_b+j) = pos_b+j;
+			*(r->biases+ pos_b+j) = (double)rand() / (double)((unsigned)RAND_MAX + 1);
 			for(int k = 0; k<length_w;++k)
 			{
 				*(r->weight + pos_w + j*length_w + k) 
-					= pos_w + j*length_w + k;
+					= (double)rand() / (double)((unsigned)RAND_MAX + 1);
 			}
 		}
 		pos_w+=length_n * length_w;
@@ -44,12 +44,19 @@ void get_biases(const Reseau *r, int rang, float **begin)
 	*begin = r->biases + pos;
 }
 
-void get_weight(const Reseau *r, int rang, int neurone, float **begin)
+
+void get_all_weight(const Reseau *r, int rang,  float **begin)
 {
 	int pos = 0, i = 1;
 	for(; i<rang; ++i)
 		pos += r->size[i-1]*r->size[i];
-	*begin = r->weight + pos + r->size[i-1]*neurone;
+	*begin = r->weight + pos ;
+}
+
+void get_weight(const Reseau *r, int rang, int neurone, float **begin)
+{
+	get_all_weight(r,rang,begin);
+	*begin += r->size[rang-1]*neurone;
 }
 
 float* feed_forward(const Reseau *r, float *data)
@@ -63,17 +70,13 @@ float* feed_forward(const Reseau *r, float *data)
 
 float* z_calc(const Reseau *r, int rang, float *data)
 {
-	float *temp = calloc(r->size[rang],sizeof(float));
-	float *beg_w, *beg_b;
-	get_biases(r, rang, &beg_b);
+	float *w, *b;
+	get_biases(r, rang, &b);
+	get_all_weight(r,rang,&w);
+	float *temp = multiplie_array(w,data,r->size[rang],r->size[rang-1],1);
 	for(int i = 0; i<r->size[rang]; ++i)
 	{
-		get_weight(r,rang,i,&beg_w);
-		for(int j = 0 ; j<r->size[rang-1]; ++j)
-		{
-			*(temp+i)+=*(beg_w+j)**(data+j);
-		}
-		*(temp+i)+=*(beg_b+i);
+		*(temp+i)+=*(b+i);
 	}
 	return temp;
 }
