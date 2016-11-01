@@ -45,27 +45,12 @@ void get_biases(const Reseau *r, int rang, float **begin)
 }
 
 
-void get_all_weight(const Reseau *r, int rang,  float **begin)
+void get_weight(const Reseau *r, int rang,  float **begin)
 {
 	int pos = 0, i = 1;
 	for(; i<rang; ++i)
 		pos += r->size[i-1]*r->size[i];
 	*begin = r->weight + pos ;
-}
-
-void get_weight(const Reseau *r, int rang, int neurone, float **begin)
-{
-	get_all_weight(r,rang,begin);
-	*begin += r->size[rang-1]*neurone;
-}
-
-float* feed_forward(const Reseau *r, float *data)
-{
-	for(int i = 1; i<r->length_size;++i)
-	{
-		data = sigmoid(r,i,z_calc(r,i,data));
-	}
-	return data;
 }
 
 float* z_calc(const Reseau *r, int rang, float *data)

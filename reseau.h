@@ -21,9 +21,7 @@ Reseau* construct(int *size, int ls);
 //Function who get biases of a layer
 void get_biases(const Reseau *r, int rang, float **begin);
 //Function who get weights of a layer
-void get_all_weight(const Reseau *r, int rang,  float **begin);
-//Function who get weights of a neurone
-void get_weight(const Reseau *r, int rang, int neurone, float **begin);
+void get_weight(const Reseau *r, int rang,  float **begin);
 //Function who execute the neural network
 float *feed_forward(const Reseau *r, float *data);
 //Function who compute z for the sigmoid

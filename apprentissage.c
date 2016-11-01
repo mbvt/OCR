@@ -42,9 +42,8 @@ void maj_reseau(Reseau *r, float *n_b, float *n_w, int batch_size, const float e
 		*(r->weight+i) = *(r->weight+i)-tx**(n_w+i);
 	}
 	for(;i<r->length_weight;++i)
-	{
 		*(r->weight+i) = *(r->weight+i)-tx**(n_w+i);
-	}
+	
 	free(n_b);
 	free(n_w);
 }
@@ -73,10 +72,7 @@ float* calc_first_delta(Reseau *r, int rang, float *data, float result)
 {
 	float *temp = sigmoid_prime(r,rang,data);
 	float *cost = cost_derivative(r,rang,data,result);
-	for(int i = 0; i<r->size[rang]; ++i)
-	{
-		*(temp+i) *= *(cost+i);
-	}
+	temp = multiplie_array(temp,cost,1,r->size[rang],1);
 	free(cost);
 	return temp;
 }
