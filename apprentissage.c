@@ -18,6 +18,44 @@ void zeros(const Reseau *r, float **n_b, float **n_w)
 	*n_w = calloc(r->length_weight,sizeof(float));
 }
 
+void put_nabla_w(const Reseau *r, int rang, float *n_w, float *ori)
+{
+	copy_array(n_w+get_pos_weight(r,rang),ori,r->size[rang]*r->size[rang-1]);
+}
+
+void put_nabla_b(const Reseau *r, int rang, float *n_b, float *ori)
+{
+	copy_array(n_b+get_pos_biases(r,rang),ori,r->size[rang]);
+}
+
+
+void put_activations(const Reseau *r, int rang, float *activations, float *ori)
+{
+	int pos = 0;
+	if(rang>0)
+		pos= get_pos_biases(r,rang) + r->size[0];
+	copy_array(activations+pos,ori,r->size[rang]);
+}
+
+void get_nabla_w(const Reseau *r, int rang, float *n_w, float **des)
+{
+	*des = n_w + get_pos_weight(r,rang);
+}
+
+void get_nabla_b(const Reseau *r, int rang, float *n_b, float **des)
+{
+	*des = n_b + get_pos_biases(r,rang);
+}
+
+
+void get_activations(const Reseau *r, int rang, float *activations, float **des)
+{
+	int pos = 0;
+	if(rang>0)
+		pos= get_pos_biases(r,rang) + r->size[0];
+	*des = activations + pos;
+}
+
 void maj_nabla(const Reseau *r, float *n_b, float *n_w, float *d_n_b, float *d_n_w)
 {
 	int i = 0;
@@ -38,11 +76,11 @@ void maj_reseau(Reseau *r, float *n_b, float *n_w, int batch_size, const float e
 	float tx = eta/(float)batch_size;
 	for(;i<r->length_bias;++i)
 	{
-		*(r->biases+i) = *(r->biases+i)-tx**(n_b+i);
-		*(r->weight+i) = *(r->weight+i)-tx**(n_w+i);
+		*(r->biases+i) -= tx**(n_b+i);
+		*(r->weight+i) -= tx**(n_w+i);
 	}
 	for(;i<r->length_weight;++i)
-		*(r->weight+i) = *(r->weight+i)-tx**(n_w+i);
+		*(r->weight+i) -= tx**(n_w+i);
 	
 	free(n_b);
 	free(n_w);
@@ -72,16 +110,17 @@ float* calc_first_delta(Reseau *r, int rang, float *data, float result)
 {
 	float *temp = sigmoid_prime(r,rang,data);
 	float *cost = cost_derivative(r,rang,data,result);
-	temp = multiplie_array(temp,cost,1,r->size[rang],1);
+	float *res = multiplie_array(temp,cost,1,r->size[rang],1);
 	free(cost);
-	return temp;
+	free(temp);
+	return res;
 }
 
 void calc_delta(Reseau *r, int rang, float *data, float *delta)
 {
 	float *temp = sigmoid_prime(r,rang,data);
 	float *w;
-	get_all_weight(r,r->size[rang+1],&w);
+	get_weight(r,r->size[rang+1],&w);
 	float *cost = multiplie_array(transpose_array(w,r->size[rang+1],r->size[rang]),delta,r->size[rang],r->size[rang+1],1);
 	for(int i = 0; i<r->size[rang]; ++i)
 	{
@@ -107,38 +146,29 @@ void back_propagation(Reseau *r, const Teach current_val, float **d_n_b, float *
 	zeros(r, d_n_b, d_n_w);
 	float *activation = current_val.data;
 	float *activations = calloc(r->length_bias+r->size[0],sizeof(float));
-
-	copy_array(activations,activation,r->size[0]);
-	int pos_ba = r->size[0], pos_w = 0;
+	put_activations(r, 0, activations, activation);
 	int i = 1;
 	for(; i<r->length_size;++i)
 	{
 		activation = sigmoid(r,i,z_calc(r,i,activation));
-		copy_array(activations+pos_ba,activation,r->size[i]);
-		pos_ba+=r->size[i];
-		pos_w+=r->size[i]*r->size[i-1];
+		put_activations(r, i, activations, activation);
 	}
 	--i;
-	pos_w-=r->size[i]*r->size[i-1];
-	pos_ba-=r->size[i];	
 	float *delta = calc_first_delta(r,i,activation,current_val.result);
-	copy_array(*(d_n_b)+pos_ba,delta,r->size[i]);
-	pos_ba-=r->size[i-1];
+	put_nabla_b(r, i, *d_n_b, delta);
 	free(activation);
-	activation = activations+pos_ba;
-	float *temp = multiplie_array(delta,activation,1,r->size[i],r->size[i-1]);
-	copy_array(*(d_n_w)+pos_w,temp,r->size[i]*r->size[i-1]);
+	get_activations(r, i-1, activations, &activation);
+	float *temp = multiplie_array(delta,transpose_array(activation,r->size[i-1],r->size[i]),1,r->size[i],r->size[i-1]);
+	put_nabla_w(r, i, *d_n_w, temp);
 	free(temp);
 	--i;
 	for(;i>0;--i)
 	{
 		calc_delta(r,i,activation,delta);
-		copy_array(*(d_n_b)+pos_ba,delta,r->size[i]);
-		pos_w-=r->size[i]*r->size[i-1];
-		pos_ba-=r->size[i-1];
-		activation-=r->size[i-1];
-		float *temp = multiplie_array(delta,activation,r->size[i],1,r->size[i-1]);
-		copy_array(*(d_n_w)+pos_w,temp,r->size[i]*r->size[i-1]);
+		put_nabla_b(r, i, *d_n_b, delta);
+		get_activations(r, i-1, activations, &activation);
+		float *temp = multiplie_array(delta,transpose_array(activation,r->size[i-1],1),r->size[i],1,r->size[i-1]);
+		put_nabla_w(r, i, *d_n_w, temp);
 		free(temp);
 	}
 	free(delta);
@@ -181,14 +211,14 @@ void sgd(Reseau *r, Teach *tr_data, int length_trd, int epoch, const int m_b_siz
 		if(length_tsd)
 		{
 			int res = evaluate(r,test_data,length_tsd);
-			for(int i = 0 ; i < r->length_bias;++i)
+			/*for(int i = 0 ; i < r->length_bias;++i)
 			{
 				printf("b%d : %f\n",i,*(r->biases+i));
 			}
 			for(int i = 0 ; i < r->length_weight;++i)
 			{
 				printf("w%d : %f\n",i,*(r->weight+i));
-			}
+			}*/
 			printf("Epoch %d : %d/%d\n",i+1,res,length_tsd);
 		}
 		else

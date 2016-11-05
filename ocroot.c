@@ -67,11 +67,6 @@ int main(void)
 		
 	sgd(r,tr_dt,4,10000,2,3,tr_dt,4);
 	
-	
-	//Test save biases and weights
-
-	saving_file(r); 
-
 
 	return 0;
 }
