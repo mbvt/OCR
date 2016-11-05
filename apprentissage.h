@@ -19,6 +19,13 @@ typedef struct Teach
 void shuffle(Teach *t, int length);
 //Function which create two array with the size of weights and biases initialize to 0
 void zeros(const Reseau *r, float **n_b, float **n_w);
+
+void put_nabla_w(const Reseau *r, int rang, float *n_w, float *ori);
+void put_nabla_b(const Reseau *r, int rang, float *n_b, float *ori);
+void put_activations(const Reseau *r, int rang, float *activations, float *ori);
+void get_nabla_w(const Reseau *r, int rang, float *n_w, float **des);
+void get_nabla_b(const Reseau *r, int rang, float *n_b, float **des);
+void get_activations(const Reseau *r, int rang, float *activations, float **des);
 //Function which get news value for nabla;
 void maj_nabla(const Reseau *r, float *n_b, float *n_w, float *d_n_b, float *d_n_w);
 //Function which get news value for biases and weight

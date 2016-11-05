@@ -18,6 +18,8 @@ typedef struct Reseau
 
 //Function who construct a neural network with random value
 Reseau* construct(int *size, int ls);
+int get_pos_biases(const Reseau *r, int rang);
+int get_pos_weight(const Reseau *r, int rang);
 //Function who get biases of a layer
 void get_biases(const Reseau *r, int rang, float **begin);
 //Function who get weights of a layer

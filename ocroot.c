@@ -13,7 +13,7 @@
 //int main(int argc, char **argv)
 int main(void)
 {
-	/*init_sdl();
+	init_sdl();
 	printf("Bienvenu sur le projet OCRoot\n");
 	printf("Realise par la team M.A.T.\n");
 	printf("Actuellement en API\n");
@@ -23,6 +23,20 @@ int main(void)
 	scanf("%c", &ch);
 	SDL_Surface *txt = load_image("lorem.bmp");
 	Image *img = convert_image(txt);
+/*	FILE* file = NULL;
+	file = fopen("test.txt","w");
+	if(file != NULL)
+	{
+		for(int i = 0; i<img->h; ++i)
+		{
+			for(int j = 0; j<img->w; ++j)
+			{	
+				fputs((get_pixel(img,i,j)<128)?"1":"0",file);
+			}
+			fputs("\n",file);
+		}
+fclose(file1);
+	}*/
 	search_text(img);
 	search_row(img);
 	search_letter(img);
@@ -38,8 +52,8 @@ int main(void)
 	display_image(txt);
 	printf("Appuyer sur une touche...\n");
 		
-	printf("Malheureusement l'apprentissage de la fonction xor n'est pas encore disponible.\n");*/
-	
+	printf("Malheureusement l'apprentissage de la fonction xor n'est pas encore disponible.\n");
+	/*
 	Teach *te1 = malloc(sizeof(Teach));
 	Teach *te2 = malloc(sizeof(Teach));
 	Teach *te3 = malloc(sizeof(Teach));
@@ -65,6 +79,5 @@ int main(void)
 	Reseau *r = construct(size,3);
 		
 	sgd(r,tr_dt,4,10000,2,3,tr_dt,4);
-	
-	return 0;
+*/
 }
