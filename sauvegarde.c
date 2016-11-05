@@ -4,11 +4,18 @@
 
 
 
-int saving_file(float *bp, float *bw, int length_b, int length_w)
+void saving_file(Reseau r)
 {
+
+	float *bp = r->biases;
+	int length_b = r->length_bias;
+	
+	float *bw = r->weight;
+	int length_w = r->length_weight;
+	 
 	FILE *fp = NULL;
 	
-	fp = fopen("bnw.txt", "a");
+	fp = fopen("biases_n_weights.txt", "a");
 	
 	if (fichier != NULL)
 	{
@@ -17,10 +24,14 @@ int saving_file(float *bp, float *bw, int length_b, int length_w)
  
 		fclose(fp);
 		
-		return 1;
+		//return 1;
+	}
+	else
+	{
+		printf("Impossible d'ouvrir le fichier .txt");
 	}
 	
-	return 0;
+//	return 0;
 }
 
 void save_biases(float *bp, int length_b)

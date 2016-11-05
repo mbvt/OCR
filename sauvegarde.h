@@ -7,10 +7,12 @@
 # include <stdio.h>
 
 //function who open and save biases and weights in file
-int saving_file(float *bp, float *bw, int length_b, int length_w);
+void saving_file(Reseau *r);
 
 //function who writes biases in file
 void save_biases(float *bp, int length_b);
 
 //function who writes weights in file
-void save_weights(float *wp, int length_w)
+void save_weights(float *wp, int length_w);
+
+# endif /* _OCROOT_SAUVEGARDE_H_ */
