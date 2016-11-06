@@ -4,7 +4,7 @@
 # define _OCROOT_SAUVEGARDE_H_
 
 # include <stdlib.h>
-# include <stdio.h>
+
 
 //function who open and save biases and weights in file
 void saving_file(Reseau *r);

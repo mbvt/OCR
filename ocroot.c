@@ -66,7 +66,9 @@ int main(void)
 	Reseau *r = construct(size,3);
 		
 	sgd(r,tr_dt,4,10000,2,3,tr_dt,4);
-	
+
+
+	saving_file(r);	
 
 	return 0;
 }

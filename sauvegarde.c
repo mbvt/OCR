@@ -4,7 +4,7 @@
 
 
 
-void saving_file(Reseau r)
+void saving_file(Reseau *r)
 {
 
 	float *bp = r->biases;
