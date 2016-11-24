@@ -12,12 +12,10 @@
 	i = -1 to test a column
 	j = -1 to test a row
 */
-int not_empty(Image *img, int i, int j, int min, int max);
+int not_empty(struct image *img, int i, int j, int min, int max);
 
 //Find text zone
-void search_text(Image * img);
-//Find rows in image
-void search_row(Image *img);
-//Find letter in image
-void search_letter(Image *img);
+void search_text(struct image * img);
+
+void search_block(struct image *img, int fmn, int fmx, int min, int max, int l);
 #endif /* _OCROOT_DECOUPAGE_H_ */

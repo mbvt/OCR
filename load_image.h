@@ -9,6 +9,7 @@
 # include <SDL/SDL_image.h>
 # include <err.h>
 # include "image.h"
+# include "queue.h"
 
 //Initialize SDL
 void init_sdl(void);
@@ -19,7 +20,7 @@ Uint32 getpixel(SDL_Surface *surface, unsigned x,  unsigned y);
 //Set a pixel
 void putpixel(SDL_Surface *surface, unsigned x, unsigned y, Uint32 pixel);
 //Function who return a black and white matrice
-Image* convert_image(SDL_Surface* img);
+struct image* convert_image(SDL_Surface* img);
 //Wait for keydown event
 void wait_for_keypressed(void);
 //Display an image
@@ -27,9 +28,9 @@ SDL_Surface* display_image(SDL_Surface *img);
 //Draw a square
 void draw_square(SDL_Surface *surf, int i_min, int i_max, int j_min, int j_max, Uint32 p);
 //Draw edge of text
-void edge_text(Image *img, SDL_Surface *surf);
+void edge_text(struct image *img, SDL_Surface *surf);
 //Draw edge of row
-void edge_row(Image *img, SDL_Surface *surf);
+void edge_row(struct image *img, SDL_Surface *surf);
 //Draw edge of letter
-void edge_letter(Image *img, SDL_Surface *surf);
+void edge_letter(struct image *img, SDL_Surface *surf);
 # endif /* _OCROOT_LOAD_IMAGE_H_ */

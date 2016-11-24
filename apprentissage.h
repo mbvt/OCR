@@ -10,41 +10,41 @@
 # include "reseau.h"
 # include "matrice.h"
 
-typedef struct Teach
+struct teach
 {
 	float *data, result;
-}Teach;
+};
 
 //Function which shuffle an array of Teach
-void shuffle(Teach *t, int length);
+void shuffle(struct teach *t, int length);
 //Function which create two array with the size of weights and biases initialize to 0
-void zeros(const Reseau *r, float **n_b, float **n_w);
+void zeros(const struct reseau *r, float **n_b, float **n_w);
 
-void put_nabla_w(const Reseau *r, int rang, float *n_w, float *ori);
-void put_nabla_b(const Reseau *r, int rang, float *n_b, float *ori);
-void put_activations(const Reseau *r, int rang, float *activations, float *ori);
-void get_nabla_w(const Reseau *r, int rang, float *n_w, float **des);
-void get_nabla_b(const Reseau *r, int rang, float *n_b, float **des);
-void get_activations(const Reseau *r, int rang, float *activations, float **des);
+void put_nabla_w(const struct reseau *r, int rang, float *n_w, float *ori);
+void put_nabla_b(const struct reseau *r, int rang, float *n_b, float *ori);
+void put_activations(const struct reseau *r, int rang, float *activations, float *ori);
+void get_nabla_w(const struct reseau *r, int rang, float *n_w, float **des);
+void get_nabla_b(const struct reseau *r, int rang, float *n_b, float **des);
+void get_activations(const struct reseau *r, int rang, float *activations, float **des);
 //Function which get news value for nabla;
-void maj_nabla(const Reseau *r, float *n_b, float *n_w, float *d_n_b, float *d_n_w);
+void maj_nabla(const struct reseau *r, float *n_b, float *n_w, float *d_n_b, float *d_n_w);
 //Function which get news value for biases and weight
-void maj_reseau(Reseau *r, float *n_b, float *n_w, int batch_size, const float eta);
+void maj_reseau(struct reseau *r, float *n_b, float *n_w, int batch_size, const float eta);
 //Function which compute the sigmoid prime
-float* sigmoid_prime(Reseau *r, int rang, float *data);
+float* sigmoid_prime(struct reseau *r, int rang, float *data);
 //Function which compute the cost derivative function
-float* cost_derivative(Reseau *r, int rang, float *data, float result);
+float* cost_derivative(struct reseau *r, int rang, float *data, float result);
 //Function which calcul delta for the final layer
-float* calc_first_delta(Reseau *r, int rang, float *data, float result);
+float* calc_first_delta(struct reseau *r, int rang, float *data, float result);
 //Function which calcul delta for the others layer
-void calc_delta(Reseau *r, int rang, float *data, float *delta);
+void calc_delta(struct reseau *r, int rang, float *data, float **delta);
 //Function which evaluate the network
-int evaluate(Reseau *r, const Teach* test_data, int length_tsd);
+int evaluate(struct reseau *r, const struct teach* test_data, int length_tsd);
 //Function which apply back propagation algorithme to the network
-void back_propagation(Reseau *r, const Teach current_val, float **d_n_b, float **d_n_w);
+void back_propagation(struct reseau *r, const struct teach current_val, float **d_n_b, float **d_n_w);
 //Function which teach to the network
-void teach_reseau(Reseau *r, const Teach *tr_data, int length_trd, const int m_b_size, const float eta);
+void teach_reseau(struct reseau *r, const struct teach *tr_data, int length_trd, const int m_b_size, const float eta);
 //Function which manage the learning of network
-void sgd(Reseau *r, Teach *tr_data, int length_trd, int epoch, const int m_b_size, 
-	float eta,const Teach* test_data, int length_tsd);
+void sgd(struct reseau *r, struct teach *tr_data, int length_trd, int epoch, const int m_b_size, 
+	float eta,const struct teach* test_data, int length_tsd);
 # endif /* _OCROOT_APPRENTISSAGE_H_ */

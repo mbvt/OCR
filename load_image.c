@@ -70,9 +70,9 @@ void putpixel(SDL_Surface *surface, unsigned x, unsigned y, Uint32 pixel) {
   }
 }
 
-Image* convert_image(SDL_Surface* img)
+struct image* convert_image(SDL_Surface* img)
 {
-	Image* new_img = new_matrix(img->w, img->h);
+	struct image* new_img = new_matrix(img->w, img->h);
 
 	for(int i = 0; i < img->h; i++)
 	{
@@ -142,14 +142,17 @@ void draw_square(SDL_Surface *surf, int i_min, int i_max, int j_min, int j_max, 
         }
 }
 
-void edge_text(Image *img, SDL_Surface *surf)
+/*
+void edge_text(struct image *img, SDL_Surface *surf)
 {
-	Text *te = img->te;
+  struct queue *q = img->queue;
+  int imin = q->store->i_min, jmin = q->store->j_min;
+  int imax = q->store->next->i_max, jmax = q->store->next->j_max;
 	Uint32 p = SDL_MapRGB(surf->format,255,0,0);
-	draw_square(surf,te->i_min,te->i_max,te->j_min,te->j_max,p);
+	draw_square(surf, imin, imax, jmin, jmax);
 }
 
-void edge_row(Image *img, SDL_Surface *surf)
+void edge_row(struct image *img, SDL_Surface *surf)
 {
 	Text *te = img->te;
 	Uint32 p = SDL_MapRGB(surf->format,0,255,0);
@@ -159,18 +162,15 @@ void edge_row(Image *img, SDL_Surface *surf)
 		draw_square(surf,li.i_min,li.i_max,te->j_min,te->j_max,p);  
 	}
 }
+*/
 
-void edge_letter(Image *img, SDL_Surface *surf)
+void edge_letter(struct image *img, SDL_Surface *surf)
 {
-	Text *te = img->te;
-	Uint32 p = SDL_MapRGB(surf->format,0,0,255);
-	for(int i=0; i<te->nb_li; ++i)
-	{
-		Ligne li = *(te->li + i);
-		for(int j = 0; j<li.nb_le;++j)
-		{
-			Lettre le = *(li.le + j);
-			draw_square(surf,li.i_min,li.i_max,le.j_min,le.j_max,p);
-		}
-	}
+  while(!queue_is_empty(img->queue))
+  {
+    struct letter *l = queue_pop(img->queue);
+    Uint32 p = SDL_MapRGB(surf->format,0,0,255); 
+    draw_square(surf, l->i_min, l->i_max, l->j_min, l->j_max, p);
+    free(l);
+  }
 }

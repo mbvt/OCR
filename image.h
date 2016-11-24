@@ -3,54 +3,35 @@
 # ifndef _OCROOT_IMAGE_H_
 # define _OCROOT_IMAGE_H_
 
-//Stock letter's position in a row
-typedef struct Lettre
-{
-	int j_min,j_max;
-}Lettre;
+# include <stdlib.h>
+# include <string.h>
+# include <assert.h>
+# include "queue.h"
 
-//Stock row's position in text
-typedef struct Ligne
+struct letter
 {
-	int i_min,i_max,nb_le;
-	Lettre *le;
-}Ligne;
+  int i_min,i_max,j_min,j_max;
+};
 
-//Stock coordonne of text in an image
-typedef struct Text
-{
-	int i_min,i_max,j_min,j_max,nb_li;
-	Ligne *li;
-}Text;
-
-//stock an image
-typedef struct Image
+struct image
 {
 	int w,h;
 	unsigned char *dat;
-	Text *te;
-} Image;
+  struct queue *queue;
+};
 
 //Initialize an empty matrice
-Image* new_matrix(int w, int h);
+struct image* new_matrix(int w, int h);
+
+void new_letter(struct image *img, int i_min, int i_max, int j_min, int j_max);
 
 //Set a pixel
-void set_pixel(Image* img, int i, int j, unsigned char px);
-//Set text coordonnee
-void set_text(Image *img, int i_min, int i_max, int j_min, int j_max);
-//Add a row in text
-void add_row(Text *te, int i_min, int i_max);
-//Add a letter in a row
-void add_letter(Ligne *li, int j_min, int j_max);
+void set_pixel(struct image* img, int i, int j, unsigned char px);
 
 //Get a pixel
-unsigned char get_pixel(Image* img, int i, int j);
-//Get a row
-Ligne* get_row(Text* te, int i);
-//Get a letter
-Lettre* get_letter(Ligne *li, int i);
+unsigned char get_pixel(struct image* img, int i, int j);
 
 //Free an image
-void del_image(Image* img);
+void del_image(struct image* img);
 
 # endif /* _OCROOT_IMAGE_H_ */
