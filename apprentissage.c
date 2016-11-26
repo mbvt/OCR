@@ -178,9 +178,7 @@ void back_propagation(struct reseau *r, const struct teach current_val,
 		put_nabla_b(r, i, *d_n_b, delta);
 		get_activations(r, i-1, activations, &activation);
     trans = transpose_array(activation, r->size[i-1], 1);
-		float *temp = multiplie_array(
-                    delta, trans,
-                    r->size[i], 1, r->size[i-1]);
+		float *temp = multiplie_array(delta, trans, r->size[i], 1, r->size[i-1]);
 		put_nabla_w(r, i, *d_n_w, temp);
     free(trans);
 		free(temp);

@@ -7,7 +7,7 @@ CFLAGS= -g -Wall -Wextra -Werror -std=c99
 LDFLAGS= -lm
 LDLIBS= `pkg-config --libs sdl` -lSDL_image
  
-SRC= load_image.c image.c decoupage.c queue.c reseau.c apprentissage.c matrice.c ocroot.c 
+SRC= load_image.c image.c decoupage.c queue.c reseau.c apprentissage.c matrice.c  read.c ocroot.c 
 OBJ= ${SRC:.c=.o}
  
 all: ocroot

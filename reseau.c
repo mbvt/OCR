@@ -17,18 +17,20 @@ struct reseau* construct(int *size, int ls)
 	r->length_weight = t_weight;
 	r->biases = calloc(t_biases,sizeof(float));
 	r->weight = calloc(t_weight,sizeof(float));
-	int pos_w = 0, pos_b = 0;
+  int pos_w = 0, pos_b = 0;
+  double cpt_b = 1, cpt_w = 1;
 	for(int i = 1; i<ls; ++i)
 	{
 		int length_n = *(size+i);
 		int length_w = *(size+i-1);
 		for(int j = 0; j<length_n;++j)
 		{
-			*(r->biases+ pos_b+j) = (double)rand() / (double)((unsigned)RAND_MAX + 1);
+			*(r->biases+ pos_b+j) = cpt_b/10.0;
+      cpt_b++;
 			for(int k = 0; k<length_w;++k)
 			{
-				*(r->weight + pos_w + j*length_w + k) 
-					= (double)rand() / (double)((unsigned)RAND_MAX + 1);
+				*(r->weight + pos_w + j*length_w + k)	= cpt_w/100;
+        cpt_w++;
 			}
 		}
 		pos_w+=length_n * length_w;
@@ -69,10 +71,6 @@ float* feed_forward(const struct reseau *r, float *data)
 {
 	for(int i = 1; i<r->length_size;++i)
 	{
-		float *w, *b;
-		get_biases(r, i, &b);
-		get_weight(r, i, &w);
-		
 		data = sigmoid(r,i,z_calc(r,i,data));
 	}
 	return data;

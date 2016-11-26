@@ -23,6 +23,11 @@ void new_letter(struct image *img, int i_min, int i_max, int j_min, int j_max)
   queue_push(img->queue,l);
 }
 
+struct letter* get_letter(struct image *img)
+{
+  return queue_pop(img->queue);
+}
+
 void set_pixel(struct image* img, int i, int j, unsigned char px)
 {
 	assert(img && i>=0 && i<img->h && j>=0 && j<img->w);

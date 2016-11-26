@@ -25,6 +25,7 @@ struct image* new_matrix(int w, int h);
 
 void new_letter(struct image *img, int i_min, int i_max, int j_min, int j_max);
 
+struct letter* get_letter(struct image *img);
 //Set a pixel
 void set_pixel(struct image* img, int i, int j, unsigned char px);
 
