@@ -8,53 +8,57 @@ void saving_file(Reseau *r)
 {
 
 	float *bp = r->biases;
-	int length_b = r->length_bias;
+	float length_b = (float) r->length_bias;
 	
 	float *bw = r->weight;
-	int length_w = r->length_weight;
+	float length_w = (float) r->length_weight;
 	 
 	FILE *fp = NULL;
 	
 	fp = fopen("biases_n_weights.txt", "a");
 	
-	if (fichier != NULL)
+	if (fp)
 	{
-		save_biases(*bp, length_b);
-		save_weights(*bw, length_w);
+		save_biases(bp, length_b, fp);
+		save_weights(bw, length_w, fp);
  
 		fclose(fp);
 		
-		//return 1;
 	}
 	else
 	{
 		printf("Impossible d'ouvrir le fichier .txt");
 	}
 	
-//	return 0;
 }
 
-void save_biases(float *bp, int length_b)
+void save_biases(float *bp, float length_b, FILE *fp)
 {
-	float *length_b = *bp + length_b;
 
-	for(; bp < length_b; bp++)
+	printf("\nEcriture des biais dans file\n");
+	
+	for(float i = 0; i < length_b; ++i)
 	{
-		fputs(*bp, fp);
+		printf(" biais : %f\n", *bp);
+		fputs((char *)bp, fp);
 		fputc(';', fp);
+		++bp;
 	}
 
 }
 
 
-void save_weights(float *bw, int length_w)
+void save_weights(float *bw, float length_w, FILE *fp)
 {
-	float *length_w = *bw + length_w;
-
-	for(; bw < length_w; bw++)
+	
+	printf("\nEcriture des biais dans file\n");
+	
+	for(float i = 0; i < length_w; ++i)
 	{
-		fputs(*bw, fp);
+		printf(" weight : %f\n", *bw);
+		fputs((char *)bw, fp);
 		fputc(';', fp);
+		++bw;
 	}	
 	
 }
