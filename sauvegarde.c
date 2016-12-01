@@ -7,19 +7,26 @@
 void saving_file(Reseau *r)
 {
 
+	int *bs = r->size;
+	int length_s = r->length_size;
+
 	float *bp = r->biases;
-	float length_b = (float) r->length_bias;
+	int length_b = r->length_bias;
 	
 	float *bw = r->weight;
-	float length_w = (float) r->length_weight;
+	int length_w = r->length_weight;
 	 
 	FILE *fp = NULL;
 	
-	fp = fopen("biases_n_weights.txt", "a");
+	fp = fopen("biases_n_weights.txt", "w");
 	
 	if (fp)
 	{
+		fprintf(fp, "%d;%d;%d\n", length_s, r->length_bias, r->length_weight);
+		save_size(bs, length_s, fp);	
+		fprintf(fp, "\n");
 		save_biases(bp, length_b, fp);
+		fprintf(fp, "\n");
 		save_weights(bw, length_w, fp);
  
 		fclose(fp);
@@ -32,33 +39,50 @@ void saving_file(Reseau *r)
 	
 }
 
-void save_biases(float *bp, float length_b, FILE *fp)
+void save_size(int *bs, int length_s, FILE *fp)
 {
 
-	printf("\nEcriture des biais dans file\n");
+	printf("\nPrinting sizes :\n");
 	
-	for(float i = 0; i < length_b; ++i)
+	int* end_s = bs + length_s;
+	
+	for(; bs < end_s; ++bs)
 	{
-		printf(" biais : %f\n", *bp);
-		fputs((char *)bp, fp);
-		fputc(';', fp);
-		++bp;
+		printf(" size : %d\n", *bs);
+		fprintf(fp, "%d;", *bs);	
 	}
 
 }
 
 
-void save_weights(float *bw, float length_w, FILE *fp)
+void save_biases(float *bp, int length_b, FILE *fp)
+{
+
+	printf("\nPrinting biases :\n");
+	
+	float* end_b = bp + length_b;
+
+	for(; bp < end_b; ++bp)
+	{
+		printf(" bias : %f\n", *bp);
+		fprintf(fp, "%f;", *bp);	
+	}
+
+}
+
+
+void save_weights(float *bw, int length_w, FILE *fp)
 {
 	
-	printf("\nEcriture des biais dans file\n");
+	printf("\nPrinting weights :\n");
 	
-	for(float i = 0; i < length_w; ++i)
+	float* end_w = bw + length_w;
+	
+	for(; bw < end_w; ++bw)
 	{
 		printf(" weight : %f\n", *bw);
-		fputs((char *)bw, fp);
-		fputc(';', fp);
-		++bw;
+		fprintf(fp, "%f;", *bw);	
+	
 	}	
 	
 }

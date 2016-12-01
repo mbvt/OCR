@@ -10,9 +10,12 @@
 void saving_file(Reseau *r);
 
 //function who writes biases in file
-void save_biases(float *bp, float length_b, FILE *fp);
+void save_size(int *bs, int length_s, FILE *fp);
+
+//function who writes biases in file
+void save_biases(float *bp, int length_b, FILE *fp);
 
 //function who writes weights in file
-void save_weights(float *wp, float length_w, FILE *p);
+void save_weights(float *wp, int length_w, FILE *p);
 
 # endif /* _OCROOT_SAUVEGARDE_H_ */
