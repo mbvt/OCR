@@ -25,11 +25,12 @@ struct reseau* construct(int *size, int ls)
 		int length_w = *(size+i-1);
 		for(int j = 0; j<length_n;++j)
 		{
-			*(r->biases+ pos_b+j) = cpt_b/10.0;
+			*(r->biases+ pos_b+j) = (float)rand()/(float)(RAND_MAX);
       cpt_b++;
 			for(int k = 0; k<length_w;++k)
 			{
-				*(r->weight + pos_w + j*length_w + k)	= cpt_w/100;
+				*(r->weight + pos_w + j*length_w + k)	=
+				(float)rand()/(float)(RAND_MAX);
         cpt_w++;
 			}
 		}
@@ -66,7 +67,7 @@ void get_weight(const struct reseau *r, int rang,  float **begin)
 {
 	*begin = r->weight + get_pos_weight(r,rang);
 }
-
+/*
 float* feed_forward(const struct reseau *r, float *data)
 {
 	for(int i = 1; i<r->length_size;++i)
@@ -89,15 +90,17 @@ float* z_calc(const struct reseau *r, int rang, float *data)
 	return temp;
 }
 
+
 float* sigmoid(const struct reseau *r, int rang, float *data)
 {
 	for(int i = 0; i<r->size[rang]; ++i)
 	{	
-		*(data+i)=1.0/(1.0+exp(-1.0**(data+i)));
+		*(data+i)=1.0/(1.0+expf(-*(data+i)));
 	}
 	return data;
 }
 
+*/
 void free_reseau(struct reseau *r)
 {
   free(r->biases);

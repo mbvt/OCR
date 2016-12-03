@@ -16,7 +16,7 @@ float* transpose_array(float *a, int l, int h)
 	return temp;
 }
 
-float* multiplie_array(float *a, float *b, int l, int c, int h)
+float *multiplie_array(float *a, float *b, int l, int c, int h)
 {
 	float *temp = calloc(l*h,sizeof(float));
 	for(int i =0; i<l; ++i)
@@ -26,3 +26,18 @@ float* multiplie_array(float *a, float *b, int l, int c, int h)
 	return temp;
 }
 
+float *multiplie_scalaire(float *a, float *b, int t)
+{
+	float *temp = malloc(t * sizeof(float));
+	for (int i = 0; i < t; ++i)
+		*(temp + i) = *(a + i) * *(b + i);
+	return temp;
+}
+
+void addition_scalaire(float *a, float *b, int t)
+{
+	for (int i = 0; i < t; ++i)
+	{
+		*(a + i) += *(b + i);
+	}
+}
