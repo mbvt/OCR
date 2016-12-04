@@ -12,6 +12,5 @@ unsigned char* get_matrice(struct image *img, struct letter *letter)
       *(mat + i_min * TAILLE_J + jmin) = get_pixel(img, i, j);
     }
   }
-  free(letter);
   return mat;
 }

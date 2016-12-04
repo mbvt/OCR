@@ -28,7 +28,7 @@ SDL_Surface* display_image(SDL_Surface *img);
 //Draw a square
 void draw_square(SDL_Surface *surf, int i_min, int i_max, int j_min, int j_max, Uint32 p);
 //Draw edge of text
-void edge_text(struct image *img, SDL_Surface *surf);
+void edge_text(int i_min, int j_min, int i_max, int j_max, SDL_Surface *surf);
 //Draw edge of row
 void edge_row(struct image *img, SDL_Surface *surf);
 //Draw edge of letter

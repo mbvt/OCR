@@ -83,6 +83,7 @@ struct image* convert_image(SDL_Surface* img)
 			SDL_GetRGB(p, img->format, &r, &g, &b);
 			Uint32 gr=(0.2126*r+0.7152*g+0.0722*b);
 			set_pixel(new_img,i,j,(gr<128)?1:0);
+			putpixel(img,j,i,SDL_MapRGB(img->format,0,0,0));
 		}
 	}
 	return new_img;
@@ -131,27 +132,25 @@ SDL_Surface* display_image(SDL_Surface *img) {
 void draw_square(SDL_Surface *surf, int i_min, int i_max, int j_min, int j_max, Uint32 p)
 {
 	for(int i = i_min; i<=i_max;++i)
-        {
-                putpixel(surf,j_min,i,p);
-                putpixel(surf,j_max,i,p);
-        }
-        for(int i = j_min; i<=j_max;++i)
-        {
-                putpixel(surf,i,i_min,p);
-                putpixel(surf,i,i_max,p);
-        }
+  {
+  	putpixel(surf,j_min,i,p);
+    putpixel(surf,j_max,i,p);
+  }
+  for(int i = j_min; i<=j_max;++i)
+  {
+  	putpixel(surf,i,i_min,p);
+    putpixel(surf,i,i_max,p);
+  }
 }
 
-/*
-void edge_text(struct image *img, SDL_Surface *surf)
+
+void 							edge_text(int i_min, int j_min, int i_max, int j_max, 
+														SDL_Surface *surf)
 {
-  struct queue *q = img->queue;
-  int imin = q->store->i_min, jmin = q->store->j_min;
-  int imax = q->store->next->i_max, jmax = q->store->next->j_max;
-	Uint32 p = SDL_MapRGB(surf->format,255,0,0);
-	draw_square(surf, imin, imax, jmin, jmax);
+	Uint32 p 				= SDL_MapRGB(surf->format,255,0,0);
+	draw_square(surf, i_min, i_max, j_min, j_max,p);
 }
-
+/*
 void edge_row(struct image *img, SDL_Surface *surf)
 {
 	Text *te = img->te;
@@ -164,13 +163,25 @@ void edge_row(struct image *img, SDL_Surface *surf)
 }
 */
 
-void edge_letter(struct image *img, SDL_Surface *surf)
+void 				edge_letter(struct image *img, SDL_Surface *surf)
 {
+	int i_min = -1;
+	int i_max = -1;
+	int j_min = -1;
+	int j_max = -1;
   while(!queue_is_empty(img->queue))
   {
     struct letter *l = queue_pop(img->queue);
+		if(i_min == -1)
+		{
+			i_min = l->i_min;
+			j_min = l->j_min;
+		}
+		i_max = l->i_max;
+		j_max = l->j_max;
     Uint32 p = SDL_MapRGB(surf->format,0,0,255); 
     draw_square(surf, l->i_min, l->i_max, l->j_min, l->j_max, p);
     free(l);
   }
+	edge_text(i_min, j_min, i_max, j_max, surf);
 }

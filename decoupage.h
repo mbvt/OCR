@@ -15,8 +15,8 @@
 int not_empty(struct image *img, int i, int j, int min, int max);
 
 //Find text zone
-void search_text(struct image * img);
+int search_text(struct image * img);
 
-void search_block(struct image *img, int fmn, int fmx, int min, int max, int l);
+int search_block(struct image *img, int fmn, int fmx, int min, int max, int l);
 
 # endif /* _OCROOT_DECOUPAGE_H_ */

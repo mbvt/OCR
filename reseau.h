@@ -23,13 +23,11 @@ int get_pos_weight(const struct reseau *r, int rang);
 void get_biases(const struct reseau *r, int rang, float **begin);
 //Function who get weights of a layer
 void get_weight(const struct reseau *r, int rang,  float **begin);
-/*
+
 //Function who execute the neural network
 float *feed_forward(const struct reseau *r, float *data);
-//Function who compute z for the sigmoid
-float *z_calc(const struct reseau *r, int rang, float *data);
 //Function who compute the sigmoid
-float *sigmoid(const struct reseau *r , int rang, float *data);
-*/
+float *sigmoid(float *z, int col);
+
 void free_reseau(struct reseau *r);
 # endif /* _OCROOT_RESEAU_H_ */

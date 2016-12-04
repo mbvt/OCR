@@ -67,40 +67,34 @@ void get_weight(const struct reseau *r, int rang,  float **begin)
 {
 	*begin = r->weight + get_pos_weight(r,rang);
 }
-/*
+
 float* feed_forward(const struct reseau *r, float *data)
 {
+	float *w;
+	float *z;
+	float *b;
 	for(int i = 1; i<r->length_size;++i)
 	{
-		data = sigmoid(r,i,z_calc(r,i,data));
+		get_weight(r,i,&w);
+		get_biases(r,i,&b);
+		z = multiplie_array(data, w, 1, *(r->size + i-1), *(r->size + i));
+		addition_scalaire(z, b, *(r->size + i));
+		data = sigmoid(z,*(r->size + i));
 	}
 	return data;
 }
 
-float* z_calc(const struct reseau *r, int rang, float *data)
+float* sigmoid(float *z, int col)
 {
-	float *w, *b;
-	get_biases(r, rang, &b);
-	get_weight(r,rang,&w);
-	float *temp = multiplie_array(w,data,r->size[rang],r->size[rang-1],1);
-	for(int i = 0; i<r->size[rang]; ++i)
-	{
-		*(temp+i)+=*(b+i);
+	float *temp = malloc(col * sizeof(float));
+	for (int i = 0; i<col; ++i)
+	{	
+		*(temp + i) = 1.0 / (1.0 + expf(-*(z+i)));
 	}
 	return temp;
 }
 
 
-float* sigmoid(const struct reseau *r, int rang, float *data)
-{
-	for(int i = 0; i<r->size[rang]; ++i)
-	{	
-		*(data+i)=1.0/(1.0+expf(-*(data+i)));
-	}
-	return data;
-}
-
-*/
 void free_reseau(struct reseau *r)
 {
   free(r->biases);

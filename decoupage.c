@@ -19,7 +19,7 @@ int not_empty(struct image *img, int i, int j, int min, int max)
 	return r;
 }
 
-void search_text(struct image *img)
+int search_text(struct image *img)
 {
   int i_min = -1, i_max = -1, j_min = -1, j_max = -1;
 	for(int i = 0; i < img->h && i_min == -1; ++i)
@@ -30,11 +30,12 @@ void search_text(struct image *img)
     j_min = not_empty(img, -1, j, 0, img->h)? j : -1;
   for(int j = img->w-1; j > 0 && j_max == -1; --j)
     j_max = not_empty(img, -1, j, 0, img->h)? j : -1;
-  search_block(img, j_min, j_max, i_min, i_max, 0);
+  return search_block(img, j_min, j_max, i_min, i_max, 0);
 }
 
-void search_block(struct image *img, int fmn, int fmx, int min, int max, int l)
+int search_block(struct image *img, int fmn, int fmx, int min, int max, int l)
 {
+	int cpt = 0;
   int s_min = -1;
   for(int i = min; i < max; ++i)
   {
@@ -44,11 +45,14 @@ void search_block(struct image *img, int fmn, int fmx, int min, int max, int l)
       s_min = i;
     else if((!r || i + 1 == max) && s_min != -1)
     {
-      if(l)
+      if(l){
         new_letter(img, fmn, fmx, s_min, i);
+				cpt++;
+			}
       else
-        search_block(img, s_min, i, fmn, fmx, 1);
+        cpt +=  search_block(img, s_min, i, fmn, fmx, 1);
       s_min = -1;
     }
   }
+	return cpt;
 }
