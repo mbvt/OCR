@@ -12,7 +12,7 @@ struct Reseau* loading_file()
 	char *token;
 	int cpt = 0;
 	f = fopen("biases_n_weights.txt", "r");
-
+	int cpt2 = 0;
 	if(f != NULL)
 	{
 		while(fgets(chaine, MAXSIZE, f) != NULL)
@@ -21,22 +21,28 @@ struct Reseau* loading_file()
 
 			while(token != NULL)
 			{
-				//printf("%s", token);
+	
 				if (cpt == 0)
 				{
 					traitement_size_array(token, r);
 				}
 				else if (cpt == 1)
 				{
-				//	traitement_tab_size(token);
+					traitement_tab_size(token, r);
 				}
 				else if (cpt == 2)
 				{
-				//	traitement_tab_b(token);
+					traitement_tab_b(token, r);
 				}
 				else
 				{
-				//	traitement_tab_w(token);
+					while(token != NULL)
+					{
+						*(r->weight + cpt2) =
+string_to_float(token) ;
+						token = strtok(NULL, s);
+						++cpt2;
+					}
 				}
 				++cpt;
 			
@@ -68,24 +74,25 @@ void traitement_size_array(char* chaine, struct Reseau *r)
 			if(cpt == 0)
 			{
 				r->length_size = res;
+				r->size = malloc(r->length_size
+*(sizeof(int)));
 			}
 			else if(cpt == 1)
 			{
 				r->length_bias = res;
+				r->biases =
+malloc(r->length_bias*(sizeof(float)));
 			}
 			else if(cpt == 2)
 			{
 				r->length_weight = res;
+				r->weight =
+malloc(r->length_weight*(sizeof(float)));
 			}
 
 			++cpt;
-
 			token = strtok(NULL, s);
-			
 		}
-		
-		
-
 }
 
 void traitement_tab_size(char* chaine, struct Reseau *r)
@@ -101,7 +108,7 @@ void traitement_tab_size(char* chaine, struct Reseau *r)
 	{
 		res = str_to_int(token);
 		*(r->size + cpt) = res;
-
+		token = strtok(NULL, s);
 		++cpt;
 	}
 }
@@ -110,7 +117,7 @@ void traitement_tab_b(char* chaine, struct Reseau *r)
 {
 	char* s = ";";
 	char* token;
-	int res;
+	float res;
 	int cpt = 0;
 
 	token = strtok(chaine, s);
@@ -118,27 +125,9 @@ void traitement_tab_b(char* chaine, struct Reseau *r)
 	while(token != NULL)
 	{
 		res = string_to_float(token);
-		*(r->biases + cpt) = res;
-
-		++cpt;
-	}
-
-}
-
-void traitement_tab_w(char* chaine, struct Reseau *r)
-{
-	char* s = "\n";
-	char* token;
-	int res;
-	int cpt = 0;
-
-	token = strtok(chaine, s);
-
-	while(token != NULL)
-	{
-		res = string_to_float(token);
-		*(r->weight + cpt) = res;
-
+		*(r->biases + cpt) = res;		
+	printf("%f\n",res);
+		token = strtok(NULL, s);
 		++cpt;
 	}
 
@@ -165,7 +154,7 @@ float string_to_float(char* token)
 	int i = 0;
 	int a = 0;
 	float res = 0;
-
+	printf("%c\n",token[i]);
 	 if(token[0] == '-')                                     
          {                                                       
 	         sign = -1;                                      
@@ -174,6 +163,7 @@ float string_to_float(char* token)
 
          while(token[i] != '\0')                                 
          {                                                       
+		printf("%c\n",token[i]);
         	 if(!a)                                          
          	 {                                               
          	        if(token[i] == '.')                     
@@ -187,12 +177,14 @@ float string_to_float(char* token)
                  }                                               
                  else                                            
                  {                                               
-                       res += (token[i] - 48) / dec;           
+                       res = res*10 + (token[i] - 48);           
                        dec *= 10;                              
-                 }                                               
+                 }
+		printf("%f\n",res);                                               
                  ++i;
-		res *= sign;                                             
          }
+	res = res / (dec/10);
+	res *= sign;                                             
 	return res;
 }
 

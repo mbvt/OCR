@@ -42,7 +42,7 @@ int main(void)
 		
 	printf("Malheureusement l'apprentissage de la fonction xor n'est pas encore disponible.\n");*/
 	
-	Teach *te1 = malloc(sizeof(Teach));
+/*	Teach *te1 = malloc(sizeof(Teach));
 	Teach *te2 = malloc(sizeof(Teach));
 	Teach *te3 = malloc(sizeof(Teach));
 	Teach *te4 = malloc(sizeof(Teach));
@@ -62,15 +62,16 @@ int main(void)
 	te4->result = faux;
 	
 	Teach tr_dt[4] ={*te1,*te2,*te3,*te4}; 
-
+*/
 	int size[3] = {2,2,1};
 	Reseau *r = construct(size,3);
 		
-	sgd(r,tr_dt,4,10000,2,3,tr_dt,4);
+//	sgd(r,tr_dt,4,10000,2,3,tr_dt,4);
 
 
 	saving_file(r);	
-	loading_file();
+  	r = loading_file();
+	saving_file(r);	
 
 	
 	return 0;
