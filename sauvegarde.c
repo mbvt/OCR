@@ -22,7 +22,8 @@ void saving_file(Reseau *r)
 	
 	if (fp)
 	{
-		fprintf(fp, "%d;%d;%d\n", length_s, r->length_bias, r->length_weight);
+		fprintf(fp, "%d;%d;%d\n", length_s, r->length_bias,
+							 r->length_weight);
 		save_size(bs, length_s, fp);	
 		fprintf(fp, "\n");
 		save_biases(bp, length_b, fp);
@@ -81,7 +82,7 @@ void save_weights(float *bw, int length_w, FILE *fp)
 	for(; bw < end_w; ++bw)
 	{
 		printf(" weight : %f\n", *bw);
-		fprintf(fp, "%f;", *bw);	
+		fprintf(fp, "%f\n", *bw);	
 	
 	}	
 	
