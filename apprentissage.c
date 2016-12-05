@@ -139,6 +139,7 @@ float* getMat(int i, int j)
 void launch_apprentissage(struct reseau *r, float eta, float taux_erreur)
 {
 	float res;
+	float min = 99999;
 	int cpt = 0;
 	do
 	{
@@ -156,10 +157,16 @@ void launch_apprentissage(struct reseau *r, float eta, float taux_erreur)
 					free(tab);
 				}
 			}
+			if(i % 100 == 0)
+				printf(" 	%d/100  \n",i/10);
+		}
+		if(min>res)
+		{
+			saving_file(r);
+			min = res;
 		}
 		printf("Boucle %d res = %f\n",cpt,res);
 	}while (res > taux_erreur);
-	saving_file(r);
 	//evaluate(r,tab,len,taux_erreur);
 }
 

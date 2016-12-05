@@ -7,9 +7,8 @@
 # include <stdio.h>
 # include "image.h"
 # include "apprentissage.h"
-
-# define TAILLE_J 20 
-# define TAILLE_I 20
+# include "load_image.h"   
+# include "decoupage.h"
 
 struct matrice
 {
@@ -17,8 +16,9 @@ struct matrice
 	float *mat;
 };
 
+char *read_image(struct reseau *r, char* path);
 struct matrice *resize(struct image *img, struct letter *letter);
-
+char get_caractere(float *out);
 struct matrice *get_matrice(struct matrice *matrice);
 
 struct matrice *init_matrice(int width, int height);

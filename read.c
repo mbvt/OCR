@@ -1,5 +1,38 @@
 # include "read.h"
 
+char * read_image(struct reseau *r, char* path)
+{
+	char *res = calloc(1000, sizeof(char));
+	SDL_Surface *img = load_image(path);
+	struct image *mat = convert_image(img);
+	search_text(mat);
+	struct letter *letter;
+	int i = 0;
+	while((letter = get_letter(mat)) == NULL)
+	{
+		res[i] = get_caractere(feed_forward(r, get_matrice(resize(mat,
+		letter))->mat));
+	}
+	return res;
+}
+
+char get_caractere(float *out)
+{
+	int c = 63;
+	for (int i = 1; i < 63; ++i)
+	{
+		if(fabsf(*out - (float) i / (float) 63) < 0.25)
+			c = i;
+	}
+	if (c < 11)
+		return c + 48;
+	else if (c < 37)
+		return c + 65;
+	else if (c < 63)
+		return c + 97;
+	return '.';
+}
+
 int not_empty_mat(struct matrice *matrice, int i, int j, int min, int max)
 {
 	int r = 0;

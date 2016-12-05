@@ -12,12 +12,13 @@
 # include "reseau.h"
 # include "apprentissage.h"
 # include "read.h"
+# include "chargement.h"
 
 //1.5 -> 55543
 int main(void)
 {
 
-	void init_sdl();
+/*	void init_sdl();
 	SDL_Surface *img = load_image("./Lorem.bmp");
 	struct image *mat = convert_image(img);
 	printf("Il y a %i caractere\n",search_text(mat));
@@ -25,11 +26,10 @@ int main(void)
 	display_image(img);
 //	printf("Il y a %i caractere\n",search_text(mat));
 		get_matrice(resize(mat, get_letter(mat)));
-
-/*	int size[] = {256,15,1};
-	struct reseau *r = construct(size, 3);
-	launch_apprentissage(r, 1.2, 3300);
-	free_reseau(r);
+*/
+	struct reseau *r = loading_file();
+	launch_apprentissage(r, 1.5, 3300);
+/*	free_reseau(r);
 	
 	float *x = calloc(2,sizeof(float));
 	float *x1 = calloc(2,sizeof(float));
