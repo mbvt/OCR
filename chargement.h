@@ -8,6 +8,18 @@
 # include <stdlib.h>
 # include "reseau.h"
 
-void loading_file();
+struct Reseau* loading_file();
+
+void traitement_size_array(char* chaine, struct Reseau *r);
+
+void traitement_tab_size(char* chaine, struct Reseau *r);
+
+void traitement_tab_b(char* token, struct Reseau *r);
+
+void traitement_tab_w(char* token, struct Reseau *r);
+
+int str_to_int(char* token);
+
+float string_to_float(char* token);
 
 # endif /* _OCROOT_CHARGEMENT_H_ */

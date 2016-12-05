@@ -22,8 +22,9 @@ void saving_file(Reseau *r)
 	
 	if (fp)
 	{
-		fprintf(fp, "%d;%d;%d\n", length_s, r->length_bias,
+		fprintf(fp, "%d;%d;%d", length_s, r->length_bias,
 							 r->length_weight);
+		fprintf(fp,"\n");
 		save_size(bs, length_s, fp);	
 		fprintf(fp, "\n");
 		save_biases(bp, length_b, fp);

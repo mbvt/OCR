@@ -10,6 +10,7 @@
 # include "reseau.h"
 # include "apprentissage.h"
 # include "sauvegarde.h"
+# include "chargement.h"
 
 //int main(int argc, char **argv)
 int main(void)
@@ -69,6 +70,8 @@ int main(void)
 
 
 	saving_file(r);	
+	loading_file();
 
+	
 	return 0;
 }
