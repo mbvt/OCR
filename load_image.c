@@ -70,23 +70,48 @@ void putpixel(SDL_Surface *surface, unsigned x, unsigned y, Uint32 pixel) {
   }
 }
 
-struct image* convert_image(SDL_Surface* img)
-{
-	struct image* new_img = new_matrix(img->w, img->h);
+struct image* convert_image(char* path)                                                
+{                                                                               
+  init_sdl();                                                                   
+	SDL_Surface *img = load_image(path);                                          
+	struct image* new_img = new_matrix(img->w, img->h);                                  
+	                                                                             
+	for(int i = 0; i < img->h; i++)                                               
+	{                                                                             
+		for(int j = 0 ; j < img->w; j++)                                            
+		{                                                                           
+			Uint32 p = getpixel(img, j, i);                                           
+			Uint8 r, g, b;                                                            
+			SDL_GetRGB(p, img->format, &r, &g, &b);                                   
+			Uint32 gr=(0.2126*r+0.7152*g+0.0722*b);                                   
+			set_pixel(new_img,i,j,(gr<128)?1:0);                                      
+		}                                                                           
+	}                                                                             
+	return new_img;                                                               
+}     
+									
+void  conversion(struct image *img, SDL_Surface* conver)                               
+{                                                                               
 
-	for(int i = 0; i < img->h; i++)
-	{
-		for(int j = 0 ; j < img->w; j++)
-		{
-			Uint32 p = getpixel(img, j, i);
-			Uint8 r, g, b;
-			SDL_GetRGB(p, img->format, &r, &g, &b);
-			Uint32 gr=(0.2126*r+0.7152*g+0.0722*b);
-			set_pixel(new_img,i,j,(gr<128)?1:0);
-		}
-	}
-	return new_img;
-}
+	for(int i = 0; i < img->h; i++)                                               
+	{                                                                             
+	 	for(int j = 0; j < img->w; j++)                                             
+	 	{                                                                           
+		  int k;                                                                    
+		  if(get_pixel(img, i, j) ==  0)                                            
+		  {                                                                       
+		  	k = 255;                                                              
+		  }                                                                       
+		  else 
+		  { 
+		  	k = 0; 
+		  } 
+			putpixel(conver, j,i, SDL_MapRGB(conver->format, k,k,k));
+		} 
+	} 
+	SDL_SaveBMP(conver, "img.bmp"); 
+}                                                                             
+
 
 void wait_for_keypressed(void) {
   SDL_Event             event;
@@ -196,25 +221,15 @@ void edge_row(struct image *img, SDL_Surface *surf)
 
 void 				edge_letter(struct image *img, SDL_Surface *surf)
 {
-	int i_min = -1;
-	int i_max = -1;
-	int j_min = -1;
-	int j_max = -1;
 	struct letter *letter = get_letter(img);
+	new_letter(img, 0, 0, 0, 0);
 	while (letter->i_min || letter->j_min || letter->i_max || letter->j_max)
   {
-    struct letter *l = queue_pop(img->queue);
-		if(i_min == -1)
-		{
-			i_min = l->i_min;
-			j_min = l->j_min;
-		}
-		i_max = l->i_max;
-		j_max = l->j_max;
     Uint32 p = SDL_MapRGB(surf->format,0,0,255); 
-    draw_square(surf, l->i_min, l->i_max, l->j_min, l->j_max, p);
+    draw_square(surf, letter->i_min, letter->i_max, letter->j_min, letter->j_max, p);
 		new_letter(img, letter->i_min, letter->i_max, letter->j_min,
 							letter->j_max);
 		letter = get_letter(img);
   }
+	SDL_SaveBMP(surf, "imgCut.bmp");
 }

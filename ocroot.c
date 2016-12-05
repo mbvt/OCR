@@ -28,7 +28,7 @@ int main(void)
 		get_matrice(resize(mat, get_letter(mat)));
 */
 	struct reseau *r = loading_file();
-	launch_apprentissage(r, 1.5, 3300);
+	launch_apprentissage(r, 1.5, 3000);
 /*	free_reseau(r);
 	
 	float *x = calloc(2,sizeof(float));

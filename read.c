@@ -3,8 +3,7 @@
 char * read_image(struct reseau *r, char* path)
 {
 	char *res = calloc(1000, sizeof(char));
-	SDL_Surface *img = load_image(path);
-	struct image *mat = convert_image(img);
+	struct image *mat = convert_image(path);
 	search_text(mat);
 	struct letter *letter;
 	int i = 0;
