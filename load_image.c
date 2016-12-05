@@ -83,7 +83,6 @@ struct image* convert_image(SDL_Surface* img)
 			SDL_GetRGB(p, img->format, &r, &g, &b);
 			Uint32 gr=(0.2126*r+0.7152*g+0.0722*b);
 			set_pixel(new_img,i,j,(gr<128)?1:0);
-			putpixel(img,j,i,SDL_MapRGB(img->format,0,0,0));
 		}
 	}
 	return new_img;
@@ -183,5 +182,4 @@ void 				edge_letter(struct image *img, SDL_Surface *surf)
     draw_square(surf, l->i_min, l->i_max, l->j_min, l->j_max, p);
     free(l);
   }
-	edge_text(i_min, j_min, i_max, j_max, surf);
 }

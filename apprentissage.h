@@ -10,7 +10,7 @@
 # include "reseau.h"
 # include "matrice.h"
 # include "image.h"
-
+# include "sauvegarde.h"
 struct teach
 {
 	struct letter *letter;

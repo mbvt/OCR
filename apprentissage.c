@@ -9,21 +9,7 @@ float 				*sigmoid_prime(float *z, int col)
 	}
 	return temp;
 }
-/*
-int 			evaluate(struct reseau *r, const struct teach* test_data, 
-									int length_tsd, float taux_erreur)
-{
-	int res = 0;
-	for (int i = 0; i<length_tsd;++i)
-	{
-		float *t = feed_forward(r, (test_data + i)->data);
-		printf("Resultat : %f = %f - %f\n",*t - (test_data+i)->result, *t,
-		(test_data+i)->result);
-		res 		+= fabs(*t - (test_data+i)->result) < taux_erreur;
-	}
-	return res;
-}
-*/
+
 float 	back_propagation(struct reseau *r,
 												float eta, float *data, float res)
 {
@@ -45,6 +31,7 @@ float 	back_propagation(struct reseau *r,
 	float *b1;
 	float *b2;
 	float count = 0;
+	float *temp;
 	get_weight(r,1,&w1);
 	get_weight(r,2,&w2);
 	get_biases(r,1,&b1);
@@ -60,16 +47,18 @@ float 	back_propagation(struct reseau *r,
 		*(yc + i) = res - *(yc + i);
 	for (int i = 0; i < r->size[2]; ++i)
 		count = *(yc + i);
-	z3p	= sigmoid_prime(z3, r->size[2]);
-	d3 	= multiplie_scalaire(yc, z3p, r->size[2]);
-	at 	= transpose_array(a2, 1, r->size[1]);
-	dj3 = multiplie_array(at, d3, r->size[1], 1, r->size[2]);
-	wt 	= transpose_array(w2, r->size[1], r->size[2]);
-	d2 	= multiplie_array(d3, wt, 1, r->size[2], r->size[1]);
-	z2p = sigmoid_prime(z2, r->size[1]);
-	d2 	= multiplie_scalaire(d2, z2p, r->size[1]);
-	xt 	= transpose_array(data, 1, r->size[0]);
-	dj2 = multiplie_array(xt, d2, r->size[0], 1, r->size[1]);
+	z3p		= sigmoid_prime(z3, r->size[2]);
+	d3 		= multiplie_scalaire(yc, z3p, r->size[2]);
+	at 		= transpose_array(a2, 1, r->size[1]);
+	dj3 	= multiplie_array(at, d3, r->size[1], 1, r->size[2]);
+	wt 		= transpose_array(w2, r->size[1], r->size[2]);
+	d2 		= multiplie_array(d3, wt, 1, r->size[2], r->size[1]);
+	z2p 	= sigmoid_prime(z2, r->size[1]);
+	temp	= multiplie_scalaire(d2, z2p, r->size[1]);
+	free(d2);
+	d2 = temp;
+	xt 		= transpose_array(data, 1, r->size[0]);
+	dj2 	= multiplie_array(xt, d2, r->size[0], 1, r->size[1]);
 	
 	for (int i = 0; i < r->size[0]*r->size[1]; ++i)
 		*(w1 + i) += eta	*	*(dj2 + i);
@@ -80,11 +69,13 @@ float 	back_propagation(struct reseau *r,
 	for (int i = 0; i < r->size[2]; ++i)
 		*(b2 + i) += eta	*	*(d3 + i);
 
+	free(xt);
 	free(z2);
 	free(a2);
 	free(z3);
 	free(yc);
 	free(z3p);
+	free(z2p);
 	free(at);
 	free(dj3);
 	free(d3);
@@ -98,9 +89,9 @@ float* getMat(int i, int j)
 {
 	float* res = malloc(256*sizeof(float));
 	char *p = "./learn_dat/Sample0";
-	char *sample = calloc(2,sizeof(char));
-	char *samplet = calloc(4,sizeof(char));
-	char *pict = calloc(4,sizeof(char));
+	char *sample = calloc(5,sizeof(char));
+	char *samplet = calloc(5,sizeof(char));
+	char *pict = calloc(5,sizeof(char));
 	char *pictt = calloc(8,sizeof(char));
 	char *path = calloc(30,sizeof(float));
 	if (i < 10)
@@ -119,8 +110,13 @@ float* getMat(int i, int j)
 	strcat(path,sample);
 	strcat(path,"/");
 	strcat(path,pict);
+	free(sample);
+	free(samplet);
+	free(pict);
+	free(pictt);
 	FILE* file = NULL;
 	file = fopen(path, "r");
+	free(path);
 	if (!file)
 	{
 		return NULL;
@@ -134,26 +130,36 @@ float* getMat(int i, int j)
 			cpt++;
 		}
 	}
-	res = transpose_array(res, 16, 16);
+	float *temp  = transpose_array(res, 16, 16);
 	fclose(file);
-	return res;
+	free(res);
+	return temp;
 }
 
 void launch_apprentissage(struct reseau *r, float eta, float taux_erreur)
 {
+	float res;
+	int cpt = 0;
 	do
 	{
+		cpt++;
+		res = 0;
 		float *tab;
-		float res;
 		for (int i = 0; i <1016; ++i)
 		{
 			for (int j = 1; j < 63; ++j)
 			{
 				tab = getMat(j,i);
-				cpt += fabs(back_propagation(r, eta, tab, (float)j/63));
+				if(tab)
+				{
+					res += fabs(back_propagation(r, eta, tab, (float)j/63));
+					free(tab);
+				}
 			}
 		}
-	}while (cpt > 6000);
+		printf("Boucle %d res = %f\n",cpt,res);
+	}while (res > taux_erreur);
+	saving_file(r);
 	//evaluate(r,tab,len,taux_erreur);
 }
 

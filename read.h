@@ -4,13 +4,28 @@
 # define _OCROOT_READ_H_
 
 # include <stdlib.h>
+# include <stdio.h>
 # include "image.h"
 # include "apprentissage.h"
 
-# define TAILLE_J 20
-# define TAILLE_I 30
+# define TAILLE_J 20 
+# define TAILLE_I 20
 
-unsigned char* get_matrice(struct image *img, struct letter *letter);
+struct matrice
+{
+	int width, height;
+	float *mat;
+};
+
+struct matrice *resize(struct image *img, struct letter *letter);
+
+struct matrice *get_matrice(struct matrice *matrice);
+
+struct matrice *init_matrice(int width, int height);
+
+void set_val(struct matrice *matrice, int i, int j, float val);
+
+float get_val(struct matrice *matrice, int i, int j);
 
 char get_char(unsigned char *mat);
 

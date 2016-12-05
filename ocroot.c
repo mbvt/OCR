@@ -17,19 +17,21 @@
 int main(void)
 {
 
-/*	void init_sdl();
-	SDL_Surface *img = load_image("./learn.bmp");
+	void init_sdl();
+	SDL_Surface *img = load_image("./Lorem.bmp");
 	struct image *mat = convert_image(img);
 	printf("Il y a %i caractere\n",search_text(mat));
+//	edge_letter(mat, img);
+	display_image(img);
+//	printf("Il y a %i caractere\n",search_text(mat));
+		get_matrice(resize(mat, get_letter(mat)));
 
-	edge_letter(mat, img);
-	display_image(img);*/
-	float eta = 3.4;
-	int size[] = {2,3,1};
+/*	int size[] = {256,15,1};
 	struct reseau *r = construct(size, 3);
-	launch_apprentissage(r, eta, 0.5);
-
-/*	float *x = calloc(2,sizeof(float));
+	launch_apprentissage(r, 1.2, 3300);
+	free_reseau(r);
+	
+	float *x = calloc(2,sizeof(float));
 	float *x1 = calloc(2,sizeof(float));
 	float *x2 = calloc(2,sizeof(float));
 	float *x3 = calloc(2,sizeof(float));
